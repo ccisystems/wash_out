@@ -179,6 +179,7 @@ module WashOut
 
     # Used to load an entire structure.
     def map_struct(data)
+      return map_array(data) if data.is_a?(Array)
       unless data.is_a?(Hash)
         raise WashOut::Dispatcher::SOAPError, "SOAP message structure is broken"
       end
@@ -195,6 +196,14 @@ module WashOut
       end
 
       struct
+    end
+
+    def map_array(data)
+      data.each do |i|
+        map_struct(i) do |param, dat, elem|
+          param.load(dat, elem)
+        end
+      end
     end
   end
 end
