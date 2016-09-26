@@ -31,6 +31,7 @@ module WashOut
     end
 
     def _map_soap_parameters
+      raise SOAPError, "Invalid action - #{soap_action}" unless action_spec.present?
       @_params = _load_params action_spec[:in],
         _strip_empty_nodes(action_spec[:in], xml_data)
     end
@@ -163,7 +164,7 @@ module WashOut
       entity = if defined?(Rails::VERSION::MAJOR) && (Rails::VERSION::MAJOR >= 4)
         'action'
       else
-        'filter' 
+        'filter'
       end
 
       controller.send :"around_#{entity}", :_catch_soap_errors
